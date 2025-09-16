@@ -16,26 +16,35 @@
     .control-btn{ background:transparent; border:1px solid rgba(255,255,255,.2); color:white; padding:6px 10px; border-radius:10px; cursor:pointer; }
     .control-btn:active{ transform:scale(.98); }
 
-    main{ font-family:'Noto Kufi Arabic',sans-serif; display:flex; flex:1; flex-direction:column; gap:20px; padding:18px; box-sizing:border-box; }
-    .panel{ flex:1; display:flex; flex-direction:column; background:var(--panel); border-radius:12px; box-shadow:0 6px 18px rgba(20,20,30,.05); overflow:hidden; }
-    #chat-box{ padding:18px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; flex:1; background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent); }
+    main{ display:flex; flex:1; flex-direction:column; background:var(--bg); position:relative; }
+    .panel{ flex:1; display:flex; flex-direction:column; background:var(--panel); border-radius:12px; box-shadow:0 6px 18px rgba(20,20,30,.05); overflow:hidden; padding-bottom:70px; margin:10px; }
+    #chat-box{ flex:1; padding:18px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent); }
     .msg{ max-width:78%; padding:10px 14px; border-radius:12px; font-size:15px; line-height:1.4; word-break:break-word; box-shadow:0 2px 6px rgba(0,0,0,.03); animation:fadeIn .18s ease; }
     .user{ align-self:flex-end; background:var(--user-bg); border-bottom-right-radius:6px; text-align:right; direction:rtl; }
     .bot{ align-self:flex-start; background:var(--bot-bg); border-bottom-left-radius:6px; text-align:left; direction:ltr; }
     .meta{ font-size:12px; color:var(--muted); margin-top:6px; }
-    #input-area{ display:flex; gap:10px; padding:14px; border-top:1px solid rgba(0,0,0,.06); background:transparent; }
-    #user-input{ font-family:'Noto Kufi Arabic',sans-serif; flex:1; padding:12px 14px; border-radius:24px; border:1px solid #ddd; font-size:15px; outline:none; }
-    #send-btn{ font-family:'Noto Kufi Arabic',sans-serif; padding:10px 18px; border-radius:20px; border:none; background:linear-gradient(90deg,#3aa55d,#2b9a4a); color:#fff; cursor:pointer; }
+
+    #input-area{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display:flex;
+      gap:10px;
+      padding:14px 18px;
+      border-top:1px solid rgba(0,0,0,.06);
+      background:var(--panel);
+      z-index: 999;
+    }
+    #user-input{ flex:1; padding:12px 14px; border-radius:24px; border:1px solid #ddd; font-size:15px; outline:none; font-family:'Noto Kufi Arabic',sans-serif; }
+    #send-btn{ padding:10px 18px; border-radius:20px; border:none; background:linear-gradient(90deg,#3aa55d,#2b9a4a); color:#fff; cursor:pointer; font-family:'Noto Kufi Arabic',sans-serif; }
     #send-btn:active{ transform:scale(.99); }
 
     .small-btn{ background:#eee; border:1px solid #ddd; padding:6px 8px; border-radius:8px; cursor:pointer; }
-    .top-actions{ display:flex; gap:8px; align-items:center; }
-
     .model-select{ padding:6px 8px; border-radius:8px; border:1px solid #ddd; }
 
     @keyframes fadeIn{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
 
-    /* كود البرمجة */
     pre.code-block {
       background: #1e1e1e;
       color: #d4d4d4;
@@ -46,20 +55,15 @@
       font-size: 14px;
       white-space: pre-wrap;
     }
-    body.dark pre.code-block {
-      background: #333;
-      color: #c8c8c8;
-    }
+    body.dark pre.code-block { background:#333; color:#c8c8c8; }
 
-    /* dark mode */
     body.dark{ --bg:#0f1720; --panel:#0b1220; --user-bg:#2b6b3a; --bot-bg:#1b4f78; color:#e6eef6; }
     body.dark header{ background:linear-gradient(90deg,#111827,#0f1724); }
     body.dark .control-btn{ border-color:rgba(255,255,255,.08) }
     body.dark .small-btn{ background:#111827; color:#e6eef6; border-color:#222; }
-    /* responsive */
+
     @media (max-width:760px){
       main{ padding:12px }
-      #chat-box{ height:calc(100vh - 240px) }
       header h1{ font-size:18px }
     }
   </style>
@@ -68,36 +72,33 @@
   <header>
     <h1>Aseem AI — Chat</h1>
     <div class="controls">
-      <select id="model-select" class="model-select" title="اختيار النموذج">
+      <select id="model-select" class="model-select">
         <option value="gemini-2.5-flash-lite">Aseem-Ai pro</option>
         <option value="gemini-2.5-flash">Aseem-Ai 3.2-pro</option>
         <option value="gemini-2.1-lite">Aseem-Ai-4.5-lite</option>
       </select>
-      <button id="download-btn" class="control-btn" title="تحميل المحادثة">⬇</button>
-      <button id="clear-btn" class="control-btn" title="مسح المحادثة">🗑</button>
-      <button id="theme-toggle" class="control-btn" title="النهار / الليلي">🌙</button>
+      <button id="download-btn" class="control-btn">⬇</button>
+      <button id="clear-btn" class="control-btn">🗑</button>
+      <button id="theme-toggle" class="control-btn">🌙</button>
     </div>
   </header>
 
   <main>
-    <div class="panel" style="flex:1">
+    <div class="panel">
       <div id="chat-box" aria-live="polite"></div>
-
-      <div id="input-area">
-        <input id="user-input" placeholder="أسئل عن اي شي تريد.." />
-        <button id="send-btn">إرسال</button>
-      </div>
+    </div>
+    <div id="input-area">
+      <input id="user-input" placeholder="أسئل عن اي شي تريد.." />
+      <button id="send-btn">إرسال</button>
     </div>
   </main>
 
 <script>
   const themeToggle = document.getElementById('theme-toggle');
-  const savedTheme = localStorage.getItem('aseem-theme');
-  if (savedTheme === 'dark') document.body.classList.add('dark');
-
-  themeToggle.addEventListener('click', () => {
+  if(localStorage.getItem('aseem-theme')==='dark') document.body.classList.add('dark');
+  themeToggle.addEventListener('click',()=>{
     document.body.classList.toggle('dark');
-    localStorage.setItem('aseem-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    localStorage.setItem('aseem-theme',document.body.classList.contains('dark')?'dark':'light');
   });
 
   const chatBox = document.getElementById('chat-box');
@@ -108,83 +109,61 @@
   const modelSelect = document.getElementById('model-select');
 
   function isArabic(text){ return /[\u0600-\u06FF]/.test(text); }
+  function escapeHtml(unsafe){ return unsafe.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+  function formatCodeBlocks(text){ return text.replace(/```([\s\S]*?)```/g,function(m,p1){ return `<pre class="code-block">${p1}</pre>`; }); }
 
   function pushMessage(text, who='bot'){
-    const div = document.createElement('div');
-    div.className = 'msg ' + (who==='user'?'user':'bot') + ' ' + (who==='user'?'rtl':(isArabic(text)?'rtl':'ltr'));
-    // تحويل الأكواد
+    const div=document.createElement('div');
+    div.className='msg '+(who==='user'?'user':'bot')+' '+(who==='user'?'rtl':(isArabic(text)?'rtl':'ltr'));
     div.innerHTML = formatCodeBlocks(escapeHtml(text)) + `<div class="meta">${new Date().toLocaleTimeString()}</div>`;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
   function createTypingPlaceholder(){
-    const div = document.createElement('div');
-    div.className = 'msg bot ltr';
-    div.textContent = '⏳ البوت يكتب...';
+    const div=document.createElement('div');
+    div.className='msg bot ltr';
+    div.textContent='⏳ البوت يكتب...';
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
     return div;
   }
 
   async function sendToServer(message){
-    const model = modelSelect.value;
-    const res = await fetch('/chat', {
+    const model=modelSelect.value;
+    const res=await fetch('/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ message, model })
+      body:JSON.stringify({message,model})
     });
-    if(!res.ok){
-      const txt = await res.text();
-      throw new Error(txt || 'Server error');
-    }
+    if(!res.ok) throw new Error(await res.text() || 'Server error');
     return await res.json();
   }
 
   async function handleSend(){
-    const text = userInput.value.trim();
+    const text=userInput.value.trim();
     if(!text) return;
-    userInput.value = '';
+    userInput.value='';
     pushMessage(text,'user');
-
-    const placeholder = createTypingPlaceholder();
-
-    try {
-      const json = await sendToServer(text);
-      const reply = json.reply || '';
-      placeholder.innerHTML = formatCodeBlocks(escapeHtml(reply).replace(/\n/g,'<br>'));
-      placeholder.className = 'msg bot ' + (isArabic(reply)?'rtl':'ltr');
-      placeholder.innerHTML += `<div class="meta">${new Date().toLocaleTimeString()}</div>`;
-    } catch(err){
+    const placeholder=createTypingPlaceholder();
+    try{
+      const json=await sendToServer(text);
+      const reply=json.reply||'';
+      placeholder.innerHTML=formatCodeBlocks(escapeHtml(reply).replace(/\n/g,'<br>'));
+      placeholder.className='msg bot '+(isArabic(reply)?'rtl':'ltr');
+      placeholder.innerHTML+=`<div class="meta">${new Date().toLocaleTimeString()}</div>`;
+    }catch(err){
       console.error(err);
-      placeholder.textContent = '⚠️ فشل في الاتصال أو تجاوز الحصة: ' + (err.message || '');
-      placeholder.className = 'msg bot ltr';
+      placeholder.textContent='⚠️ فشل في الاتصال أو تجاوز الحصة: '+(err.message||'');
+      placeholder.className='msg bot ltr';
     }
-    chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.scrollTop=chatBox.scrollHeight;
   }
 
-  function escapeHtml(unsafe){
-    return unsafe.replaceAll('&','&amp;')
-                 .replaceAll('<','&lt;')
-                 .replaceAll('>','&gt;')
-                 .replaceAll('"','&quot;')
-                 .replaceAll("'",'&#039;');
-  }
-
-  function formatCodeBlocks(text){
-    return text.replace(/```([\s\S]*?)```/g,function(match,p1){
-      return `<pre class="code-block">${p1}</pre>`;
-    });
-  }
-
-  userInput.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter' && !e.shiftKey){
-      e.preventDefault(); handleSend();
-    }
-  });
-  sendBtn.addEventListener('click', handleSend);
-  downloadBtn.addEventListener('click', ()=>{ window.location.href='/export'; });
-  clearBtn.addEventListener('click', ()=>{ if(confirm('هل تريد مسح المحادثة محليًا؟')) chatBox.innerHTML=''; });
+  userInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); handleSend(); } });
+  sendBtn.addEventListener('click',handleSend);
+  downloadBtn.addEventListener('click',()=>{ window.location.href='/export'; });
+  clearBtn.addEventListener('click',()=>{ if(confirm('هل تريد مسح المحادثة محليًا؟')) chatBox.innerHTML=''; });
 
   pushMessage('أهلاً! اكتب سؤالك وسأجيب كما يجيب ChatAseem.', 'bot');
 </script>
