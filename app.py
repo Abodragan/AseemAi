@@ -30,11 +30,16 @@ def chat_endpoint():
         model = genai.GenerativeModel(model_name)
         chat = model.start_chat()
 
-        # إرسال آخر رسالة المستخدم
-        chat.send_message(user_message)
+        # صياغة برومبت أكاديمي
+        academic_prompt = (
+            "أجب عن السؤال التالي بأسلوب أكاديمي رسمي، منظم وواضح. "
+            "تجنب العبارات الزائدة مثل (هذه إجابة أكاديمية) أو (حسب طلبك). "
+            "قدم الإجابة مباشرة فقط.\n\n"
+            f"السؤال: {user_message}"
+        )
 
         # الحصول على الرد
-        response = chat.send_message(user_message)
+        response = chat.send_message(academic_prompt)
         bot_reply = response.text.strip()
 
         # تنظيف النصوص غير المرغوبة
@@ -64,3 +69,4 @@ def export_chat():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+
