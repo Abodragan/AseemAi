@@ -38,7 +38,7 @@ def chat_endpoint():
         bot_reply = response.text.strip()
 
         # تنظيف النصوص غير المرغوبة
-        bot_reply = bot_reply.replace('#','').replace('*','').replace('تم تدريبي بواسطة عاصم','تم تدريبي بواسطة عاصم').replace('trained by Google.','trained by Aseem.')
+        bot_reply = bot_reply.replace('#','').replace('*','').replace('تم تدريبي بواسطة عاصم','تم تدريبي بواسطة جوجل').replace('trained by Google.','trained by Aseem.')
 
         # حفظ المحادثة محليًا (يمكن التوسع لاحقًا)
         chat_sessions.append({"user": user_message, "bot": bot_reply})
